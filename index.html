@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="Inne/fikus_icon.png">
+    <title>BotanicalArt</title>
+</head>
+
+<body>
+    <header aria-label="header">
+        <img src="Inne/MałgorzataSmelcerz_naglowek.png">
+    </header>
+    <main>
+        <script>
+            let originalOrder = [];
+            let currentImageIndex = 0;
+            let galleryImages = [];
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const container = document.getElementById("container");
+                originalOrder = Array.from(container.children).map(child => child.cloneNode(true));
+                initializeLightboxEvents();
+
+                // Dodanie zamykania lightboxa po kliknięciu poza obrazek
+                const lightbox = document.getElementById("lightbox");
+                lightbox.addEventListener("click", (e) => {
+                    if (e.target === e.currentTarget || e.target.classList.contains("close")) {
+                        closeLightbox();
+                    }
+                });
+            });
+
+            function initializeLightboxEvents() {
+                const images = document.querySelectorAll("#container .item img");
+                const lightbox = document.getElementById("lightbox");
+                const lightboxImg = document.getElementById("lightbox-img");
+                const caption = document.getElementById("lightbox-caption");
+
+                galleryImages = Array.from(images);
+
+                galleryImages.forEach((img, index) => {
+                    img.style.cursor = "zoom-in";
+                    img.addEventListener("click", () => {
+                        currentImageIndex = index;
+                        openLightbox(img);
+                    });
+                });
+            }
+
+            function openLightbox(img) {
+                const lightbox = document.getElementById("lightbox");
+                const lightboxImg = document.getElementById("lightbox-img");
+                const caption = document.getElementById("lightbox-caption");
+
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                caption.textContent = img.alt || "";
+                lightbox.style.display = "flex";
+            }
+
+            function closeLightbox() {
+                document.getElementById("lightbox").style.display = "none";
+            }
+
+            function nextImage() {
+                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                openLightbox(galleryImages[currentImageIndex]);
+            }
+
+            function prevImage() {
+                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                openLightbox(galleryImages[currentImageIndex]);
+            }
+
+            function extractNumberFromItem(item) {
+                const match = item.textContent.trim().match(/^(\d+)/);
+                return match ? parseInt(match[1], 10) : 0;
+            }
+
+            function setActiveButton(button) {
+                const allButtons = document.querySelectorAll('#buttons button');
+                allButtons.forEach(btn => btn.classList.remove('active-sort'));
+                button.classList.add('active-sort');
+            }
+
+            function sortNumericA(event) {
+                const container = document.getElementById("container");
+                const items = Array.from(container.querySelectorAll(".item"));
+                items.sort((a, b) => extractNumberFromItem(a) - extractNumberFromItem(b));
+                items.forEach(item => container.appendChild(item));
+                setActiveButton(event.target);
+                initializeLightboxEvents();
+            }
+
+            function sortNumericB(event) {
+                const container = document.getElementById("container");
+                const items = Array.from(container.querySelectorAll(".item"));
+                items.sort((a, b) => extractNumberFromItem(b) - extractNumberFromItem(a));
+                items.forEach(item => container.appendChild(item));
+                setActiveButton(event.target);
+                initializeLightboxEvents();
+            }
+
+            function restoreOriginalOrder(event) {
+                const container = document.getElementById("container");
+                container.innerHTML = '';
+                originalOrder.forEach(item => container.appendChild(item.cloneNode(true)));
+                setActiveButton(event.target);
+                initializeLightboxEvents();
+            }
+        </script>
+        <div id="start1">
+            <div tabindex="0" id="rozwijanie1"></div>
+
+            <div id="start">
+                <div id="buttons">
+                    <p>Sorting:</p>
+                    <button onclick="sortNumericA(event)" title="sorting from previous">from previous</button>
+                    <button onclick="sortNumericB(event)" title="sorting from later">from later</button>
+                    <button onclick="restoreOriginalOrder(event)" title="original layout">original layout</button>
+                </div>
+                <nav aria-label="navigation">
+                    <button id="m">
+                        <ul>
+                            <li><a href="#container">Portfolio /</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <div id="container">
+            <div class="item">8<img src="Pictures/Danus.jpg" alt="Border Collie">
+                <h3><a target="_blank" href="Pictures/Danus.jpg">"Border Collie"(2020;15x21cm)</a></h3>
+            </div>
+            <div class="item">6<img src="Pictures/motyl.jpg" alt="Butterfly">
+                <h3><a target="_blank" href="Pictures/motyl.jpg">"Butterfly"(2020;11,5x15,5cm)</a></h3>
+            </div>
+            <div class="item">11<img src="Pictures/krokodyl_kolorowy.png" alt="Crocodile" loading="lazy">
+                <h3><a target="_blank" href="Pictures/krokodyl_kolorowy.png">"Crocodile"(2020;15x10,5cm)</a></h3>
+            </div>
+            <div class="item">12<img src="Pictures/wrobel2.jpg" alt="Sparrow"loading="lazy">
+                <h3><a target="_blank" href="Pictures/wrobel2.jpg">"Bird Sparrow"(2020)</a></h3>
+            </div>
+            <div class="item">14<img src="Pictures/chihuahua.jpg" alt="Szczekający szczur" loading="lazy">
+                <h3><a target="_blank" href="Pictures/chihuahua.jpg">"Chihuahua(szczekający szczur)"(2020;12x10cm)</a>
+                </h3>
+            </div>
+            <div class="item">10<img src="Pictures/s_roza.png" alt="The withering rose" loading="lazy">
+                <h3><a target="_blank" href="Pictures/s_roza.png">"The withering rose"(2020;30x40cm)</a></h3>
+            </div>
+            <div class="item">5<img src="Pictures/kwiaty1.jpg" alt="Nikko Blue Hydrangea" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kwiaty1.jpg">"Nikko Blue Hydrangea"(2020)</a></h3>
+            </div>
+            <div class="item">9<img src="Pictures/kwiaty.jpg" alt="Hydrangea Macrophylla" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kwiaty.jpg">"Hydrangea Macrophylla"(2020)</a></h3>
+            </div>
+            <div class="item">4<img src="Pictures/gruszki_lilie.jpg" alt="Pears and Lilies" loading="lazy">
+                <h3><a target="_blank" href="Pictures/gruszki_lilie.jpg">"Pears and Lilies, Copy"(2019;50x70)</a></h3>
+            </div>
+            <div class="item">3<img src="Pictures/wisnie.jpg" alt="Cherries" loading="lazy">
+                <h3><a target="_blank" href="Pictures/wisnie.jpg">"Cherries"(2019;21x30cm)</a></h3>
+            </div>
+            <div class="item">1<img src="Pictures/babeczka.jpg" alt="Cupcake" loading="lazy">
+                <h3><a target="_blank" href="Pictures/babeczka.jpg">"Cupcake"(2017;20x30cm)</a></h3>
+            </div>
+            <div class="item">13<img src="Pictures/beza_z_owocami.jpg" alt="Meringue Pavlova" loading="lazy">
+                <h3><a target="_blank" href="Pictures/beza_z_owocami.jpg">"Meringue Pavlova"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">7<img src="Pictures/ptak.jpg" alt="Sparrow" loading="lazy">
+                <h3><a target="_blank" href="Pictures/ptak.jpg">"Sparrow"(2020)</a></h3>
+            </div>
+            <div class="item">16<img src="Pictures/krokodyl_olowek.jpg" alt="Crocodile II" loading="lazy">
+                <h3><a target="_blank" href="Pictures/krokodyl_olowek.jpg">"Crocodile II"(2021)</a></h3>
+            </div>
+            <div class="item">23<img src="Pictures/niebieski_zuk.jpg" alt="Big flower Blue Beetle" loading="lazy">
+                <h3><a target="_blank" href="Pictures/niebieski_zuk.jpg">"The Mecynorrhina torquata
+                        ugandensis(Big flower Blue Beetle)"(2020;10,5x10cm)</a></h3>
+            </div>
+            <div class="item">31<img src="Pictures/pczola.jpg" alt="Bee">
+                <h3><a target="_blank" href="Pictures/pczola.jpg">"Bee"</a></h3>
+            </div>
+            <div class="item">21<img src="Pictures/zuk_fioletowy.jpg" alt="The Goliath Beetle">
+                <h3><a target="_blank" href="Pictures/zuk_fioletowy.jpg">"The Goliath Beetle"(2020;15x10,5cm)</a></h3>
+            </div>
+            <div class="item">20<img src="Pictures/1fikus.jpg" alt="Ficus macrophylla" loading="lazy">
+                <h3><a target="_blank" href="Pictures/1fikus.jpg">"Ficus macrophylla"(2019;30x40cm)</a></h3>
+            </div>
+            <div class="item">18<img src="Pictures/liscie.jpg" alt="Autumn leaves" loading="lazy">
+                <h3><a target="_blank" href="Pictures/liscie.jpg">"Autumn leaves"(2019;21x30cm)</a></h3>
+            </div>
+            <div class="item">30<img src="Pictures/roze.jpg" alt="Roses" loading="lazy">
+                <h3><a target="_blank" href="Pictures/roze.jpg">"Roses"(30x40cm)</a></h3>
+            </div>
+            <div class="item">29<img src="Pictures/irys.jpg" alt="Iryses" loading="lazy">
+                <h3><a target="_blank" href="Pictures/irys.jpg">"Iryses"(2020)</a></h3>
+            </div>
+            <div class="item">22<img src="Pictures/hydrangea.jpg" alt="Pink Hydrangea" loading="lazy">
+                <h3><a target="_blank" href="Pictures/hydrangea.jpg">"Pink Hydrangea"(2020;13x15cm)</a></h3>
+            </div>
+            <div class="item">25<img src="Pictures/pion.jpg" alt="Peonys" loading="lazy">
+                <h3><a target="_blank" href="Pictures/pion.jpg">"Peonys"(2020;30x40cm)</a></h3>
+            </div>
+            <div class="item">27<img src="Pictures/koral1.jpg" alt="Coral" loading="lazy">
+                <h3><a target="_blank" href="Pictures/koral1.jpg">"Coral"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">26<img src="Pictures/makaron.jpg" alt="Spaghetti alla Puttanesca" loading="lazy">
+                <h3><a target="_blank" href="Pictures/makaron.jpg">"Spaghetti alla Puttanesca"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">19<img src="Pictures/jablka.jpg" alt="Apples" loading="lazy">
+                <h3><a target="_blank" href="Pictures/jablka.jpg">"Apples", Copy of Johannes Reekers II 1850 - 80, "Two
+                        apples in a branch"(2019;30x40cm)</a></h3>
+            </div>
+            <div class="item">17<img src="Pictures/szparagi.jpg" alt="Asparagus" loading="lazy">
+                <h3><a target="_blank" href="Pictures/szparagi.jpg">"Asparagus"(2017;21x15cm)</a></h3>
+            </div>
+            <div class="item">24<img src="Pictures/kasztan.jpg" alt="Chestnut" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kasztan.jpg">"Chestnut(Castanea)"(2020;10x12cm)</a></h3>
+            </div>
+            <div class="item">28<img src="Pictures/1danus.jpg" alt="Border Collie" loading="lazy">
+                <h3><a target="_blank" href="Pictures/1danus.jpg">"Border Collie II"(2020;10x10cm)</a></h3>
+            </div>
+            <div class="item">32<img src="Pictures/The_blue_rider.jpg" alt="The_blue_rider">
+                <h3><a target="_blank" href="Pictures/The_blue_rider.jpg">Copy of The sketch for "The Blue Rider" Wasily
+                        Kandinsky Almanac, 1911(2017;15x21cm)</a></h3>
+            </div>
+            <div class="item">40<img src="Pictures/zielony_zuk.jpg" alt="The green Goliath Beatle">
+                <h3><a target="_blank" href="Pictures/zielony_zuk.jpg">"The green Goliath Beatle"(2020;15x10,5cm)</a>
+                </h3>
+            </div>
+            <div class="item">41<img src="Pictures/wrobel1.jpg" alt="Sparrow II" loading="lazy">
+                <h3><a target="_blank" href="Pictures/wrobel1.jpg">"Sparrow II"(2020;20x20cm)</a></h3>
+            </div>
+            <div class="item">33<img src="Pictures/fikus.jpg" alt="Ficus" loading="lazy">
+                <h3><a target="_blank" href="Pictures/fikus.jpg">"Ficus"(2019;30x40cm)</a></h3>
+            </div>
+            <div class="item">37<img src="Pictures/roze2.jpg" alt="Roses" loading="lazy">
+                <h3><a target="_blank" href="Pictures/roze2.jpg">"Roses II"(2020;30x40cm)</a></h3>
+            </div>
+            <div class="item">39<img src="Pictures/czajnik_roz.jpg" alt="Vintage tea pot with flowers" loading="lazy">
+                <h3><a target="_blank" href="Pictures/czajnik_roz.jpg">"Vintage tea pot with flowers"(2020;13x15cm)</a>
+                </h3>
+            </div>
+            <div class="item">36<img src="Pictures/kwiat_talerz.jpg" alt="Flower on a plate" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kwiat_talerz.jpg">"Flower on a plate"(2020)</a></h3>
+            </div>
+            <div class="item">35<img src="Pictures/koral2.jpg" alt="Coral" loading="lazy">
+                <h3><a target="_blank" href="Pictures/koral2.jpg">"Coral II"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">42<img src="Pictures/koral3.jpg" alt="Coral" loading="lazy">
+                <h3><a target="_blank" href="Pictures/koral3.jpg">"Coral III"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">38<img src="Pictures/rybki.jpg" alt="Small Fishes" loading="lazy">
+                <h3><a target="_blank" href="Pictures/rybki.jpg">"Small Fishes"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">34<img src="Pictures/kukurydza.jpg" alt="Corn" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kukurydza.jpg">"Corn"(2020;25x35cm)</a></h3>
+            </div>
+            <div class=" item">43<img src="Pictures/lew_olowek.jpg" alt="Lion" loading="lazy">
+                <h3><a target="_blank" href="Pictures/lew_olowek.jpg">"Lion"</a></h3>
+            </div>
+            <div class="item">44<img src="Pictures/flowers_girl.jpg" alt="Lady flower" loading="lazy">
+                <h3><a target="_blank" href="Pictures/flowers_girl.jpg">"Lady Flower"(2023;21x29,7cm)</a></h3>
+            </div>
+            <div class="item">47<img src="Pictures/pies_kot.jpg" alt="Dog&Cat">
+                <h3><a target="_blank" href="Pictures/pies_kot.jpg">"Dog&Cat"(2019;21x30cm)</a></h3>
+            </div>
+            <div class="item">56<img src="Pictures/pug_dog.jpg" alt="PugDog">
+                <h3><a target="_blank" href="Pictures/pug_dog.jpg">"Pug dog"(2020;13x18cm)</a></h3>
+            </div>
+            <div class="item">46<img src="Pictures/ptaki.jpg" alt="Birds on the limb" loading="lazy">
+                <h3><a target="_blank" href="Pictures/ptaki.jpg">"Birds on the limb"(2018;30x40cm)</a></h3>
+            </div>
+            <div class="item">49<img src="Pictures/monstera.jpg" alt="Monstera" loading="lazy">
+                <h3><a target="_blank" href="Pictures/monstera.jpg">"Monstera"(2019;30x40cm)</a></h3>
+            </div>
+            <div class="item">50<img src="Pictures/roza.jpg" alt="Rose" loading="lazy">
+                <h3><a target="_blank" href="Pictures/roza.jpg">"Rose"(2020;21x29,7cm)</a></h3>
+            </div>
+            <div class="item">52<img src="Pictures/gorgonia.jpg" alt="Coral" loading="lazy">
+                <h3><a target="_blank" href="Pictures/gorgonia.jpg">"Gorgonia coral"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">57<img src="Pictures/pavonia.jpg" alt="Coral" loading="lazy">
+                <h3><a target="_blank" href="Pictures/pavonia.jpg">"Pavonia coral"(2020;14,5x18cm)</a></h3>
+            </div>
+            <div class="item">54<img src="Pictures/jelen.jpg" alt="Deer" loading="lazy">
+                <h3><a target="_blank" href="Pictures/jelen.jpg">"Deer"(2020)</a></h3>
+            </div>
+            <div class="item">55<img src="Pictures/kon.jpg" alt="Horse" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kon.jpg">"The rocking horse"(2020)</a></h3>
+            </div>
+            <div class="item">59<img src="Pictures/czajnik.jpg" alt="Tea pot" loading="lazy">
+                <h3><a target="_blank" href="Pictures/czajnik.jpg">"Tea pot"(2020)</a></h3>
+            </div>
+            <div class="item">51<img src="Pictures/kapusta.jpg" alt="Cabbage" loading="lazy">
+                <h3><a target="_blank" href="Pictures/kapusta.jpg">"Cabbage"(2020;25x35cm)</a></h3>
+            </div>
+            <div class="item">53<img src="Pictures/The_girl_with_pearl_earring_copy.jpg"
+                    alt="The_girl_with_pearl_earring_copy" loading="lazy">
+                <h3><a target="_blank" href="Pictures/The_girl_with_pearl_earring_copy.jpg">Copy of "Girl with a Pearl
+                        Earring" Johannes Vermeer(2020;14,5x18) </a></h3>
+            </div>
+            <div class="item">58<img src="Pictures/baba_motyl.jpg" alt="Lady Buterfly" loading="lazy">
+                <h3><a target="_blank" href="Pictures/baba_motyl.jpg">"Lady Buterfly"(2023;21x29,7)</a></h3>
+            </div>
+        </div>
+        <div id="lightbox" class="lightbox">
+            <span class="close" onclick="closeLightbox()">&times;</span>
+            <span class="arrow left" onclick="prevImage()">&#10094;</span>
+            <div class="lightbox-content">
+                <img id="lightbox-img" src="" alt="">
+                <p id="lightbox-caption"></p>
+            </div>
+            <span class="arrow right" onclick="nextImage()">&#10095;</span>
+        </div>
+    </main>
+    <footer aria-label="footer">
+        <ul>
+            <h2 id="contact">Contact:</h2>
+            <li><a target="_blank" href="https://www.instagram.com/botanicaart/">Instagram: botanicaart</a></li>
+            <li><a target="_blank" href="https://www.facebook.com/SmelcerzM">Facebook: Małgorzata Art</a></li>
+            <li>E-mail: buryniak@interia.pl</li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
